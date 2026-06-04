@@ -12714,6 +12714,87 @@
         // Llamar a debugForum automáticamente
         window.debugForum = debugForum;
 
+        // ===== BÚSQUEDA INTELIGENTE DE ARTÍCULOS (IA) =====
+
+        function buscarArticulosIA() {
+            const query = document.getElementById('multa-articulo-search').value.trim().toLowerCase();
+            const sugDiv = document.getElementById('multa-articulo-sugerencias');
+
+            if (!query || query.length < 2) {
+                sugDiv.innerHTML = '';
+                return;
+            }
+
+            const articulos = Object.keys(infracciones).map(key => ({
+                id: key,
+                ...infracciones[key]
+            }));
+
+            const resultados = articulos
+                .map(art => ({
+                    ...art,
+                    score: calcularSimilitud(query, art)
+                }))
+                .filter(art => art.score > 0.3)
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 8);
+
+            if (resultados.length === 0) {
+                sugDiv.innerHTML = '<p class="text-xs text-slate-500 p-2">No se encontraron artículos similares</p>';
+                return;
+            }
+
+            sugDiv.innerHTML = resultados.map(art => `
+                <button type="button" onclick="seleccionarArticulo('${art.precepto}', '${art.id}')"
+                    class="w-full text-left bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500 rounded-lg p-2 transition group">
+                    <p class="text-xs font-bold text-emerald-400">${art.precepto}</p>
+                    <p class="text-[11px] text-slate-300 group-hover:text-white">${art.titulo}</p>
+                    <p class="text-[9px] text-slate-500 mt-0.5">📊 Similitud: ${(art.score * 100).toFixed(0)}%</p>
+                </button>
+            `).join('');
+        }
+
+        function calcularSimilitud(query, articulo) {
+            let score = 0;
+
+            const titulo = articulo.titulo.toLowerCase();
+            const hecho = articulo.hecho.toLowerCase();
+            const palabras = articulo.palabrasClave.toLowerCase();
+            const precepto = articulo.precepto.toLowerCase();
+
+            const queryWords = query.split(/\s+/).filter(w => w.length > 2);
+
+            queryWords.forEach(word => {
+                if (palabras.includes(word)) score += 0.5;
+            });
+
+            queryWords.forEach(word => {
+                if (titulo.includes(word)) score += 0.3;
+            });
+
+            queryWords.forEach(word => {
+                if (hecho.includes(word)) score += 0.2;
+            });
+
+            if (query.match(/art\.\s*\d+/i) && precepto.includes(query.replace(/\s+/g, ''))) {
+                score += 0.4;
+            }
+
+            return Math.min(score / (queryWords.length * 0.5), 1);
+        }
+
+        function seleccionarArticulo(precepto, idArticulo) {
+            document.getElementById('multa-articulo').value = precepto;
+            document.getElementById('multa-articulo-search').value = precepto;
+            document.getElementById('multa-articulo-sugerencias').innerHTML = '';
+
+            showToast(`✓ Artículo seleccionado: ${precepto}`);
+
+            const articulo = infracciones[idArticulo];
+            if (articulo && document.getElementById('multa-hecho').value === '') {
+                document.getElementById('multa-hecho').value = articulo.hecho;
+            }
+        }
     </script>
 </body>
 </html>
