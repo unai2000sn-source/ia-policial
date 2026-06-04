@@ -423,52 +423,57 @@
         </header>
 
         <!-- CUERPO OPERATIVO -->
-        <main id="view-infracciones" class="flex-1 p-4 space-y-4 overflow-y-auto custom-scrollbar pb-56">
+        <!-- VISTA: BÚSQUEDA INTELIGENTE (IA) -->
+        <main id="view-ia-search" class="hidden flex-1 p-4 space-y-4 overflow-y-auto custom-scrollbar pb-56">
 
-            <!-- BUSCADOR PRINCIPAL (ENTORNO DE ESTRÉS) -->
-            <div class="relative bg-slate-900 pt-1 pb-2">
+            <!-- Encabezado -->
+            <div class="mb-2">
+                <h2 class="text-lg font-black text-white mb-1">🤖 Búsqueda Inteligente</h2>
+                <p class="text-xs text-slate-400">Describe la infracción y encuentra el artículo exacto</p>
+            </div>
+
+            <!-- BUSCADOR INTELIGENTE IA -->
+            <div class="relative bg-slate-900 rounded-2xl p-4 border border-slate-800">
                 <div class="relative">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
-                        <i class="fa-solid fa-magnifying-glass"></i>
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-blue-400">
+                        <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
                     </span>
-                    <input type="text" id="searchInput"
-                        class="w-full bg-slate-950 text-white placeholder-slate-500 text-base rounded-xl pl-10 pr-10 py-3.5 border-2 border-slate-800 focus:border-blue-500 focus:outline-none transition-all shadow-inner"
-                        placeholder="Palabra clave (ITV, Alcohol, Seguro...)" autocomplete="off">
-                    <button id="clearBtn" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 hover:text-slate-300 hidden">
-                        <i class="fa-solid fa-circle-xmark"></i>
-                    </button>
+                    <input type="text" id="iaSearchInput"
+                        class="w-full bg-slate-950 text-white placeholder-slate-500 text-base rounded-xl pl-12 pr-4 py-3.5 border-2 border-slate-700 focus:border-blue-500 focus:outline-none transition-all"
+                        placeholder="Ej: conductor sin cinturón, rebasar línea continua, exceso velocidad..." autocomplete="off"
+                        oninput="buscarArticulosIA_Main()">
                 </div>
             </div>
 
-            <!-- BOTONES DE ACCESO RÁPIDO (UN TOQUE) -->
+            <!-- SUGERENCIAS RÁPIDAS -->
             <div>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Consultas frecuentes</p>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Búsquedas comunes</p>
                 <div class="grid grid-cols-2 gap-2">
-                    <button onclick="simulateSearch('ITV')" class="flex items-center gap-2 bg-slate-950 hover:bg-slate-800 p-3 rounded-xl border border-slate-800 transition active:scale-95 text-left text-sm font-medium">
-                        <i class="fa-solid fa-wrench text-amber-500 text-base"></i> ITV Caducada
+                    <button onclick="buscarEnIA('conductor sin cinturón')" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 p-3 rounded-xl border border-slate-800 transition active:scale-95 text-left text-sm font-medium">
+                        <i class="fa-solid fa-shield-slash text-red-500 text-base"></i> Sin Cinturón
                     </button>
-                    <button onclick="simulateSearch('Seguro')" class="flex items-center gap-2 bg-slate-950 hover:bg-slate-800 p-3 rounded-xl border border-slate-800 transition active:scale-95 text-left text-sm font-medium">
-                        <i class="fa-solid fa-file-shield text-red-500 text-base"></i> Carecer Seguro
+                    <button onclick="buscarEnIA('rebasar línea continua')" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 p-3 rounded-xl border border-slate-800 transition active:scale-95 text-left text-sm font-medium">
+                        <i class="fa-solid fa-arrows-left-right text-yellow-500 text-base"></i> Rebasar
                     </button>
-                    <button onclick="simulateSearch('Teléfono')" class="flex items-center gap-2 bg-slate-950 hover:bg-slate-800 p-3 rounded-xl border border-slate-800 transition active:scale-95 text-left text-sm font-medium">
-                        <i class="fa-solid fa-mobile-screen-button text-blue-500 text-base"></i> Móvil Conduciendo
+                    <button onclick="buscarEnIA('exceso de velocidad')" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 p-3 rounded-xl border border-slate-800 transition active:scale-95 text-left text-sm font-medium">
+                        <i class="fa-solid fa-gauge-high text-orange-500 text-base"></i> Exceso Velocidad
                     </button>
-                    <button onclick="simulateSearch('Delito')" class="flex items-center gap-2 bg-slate-950 hover:bg-slate-800 p-3 rounded-xl border border-slate-800 transition active:scale-95 text-left text-sm font-medium">
-                        <i class="fa-solid fa-triangle-exclamation text-rose-500 text-base"></i> Alcohol > 0.60
+                    <button onclick="buscarEnIA('luz defectuosa')" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 p-3 rounded-xl border border-slate-800 transition active:scale-95 text-left text-sm font-medium">
+                        <i class="fa-solid fa-lightbulb text-amber-500 text-base"></i> Foco Fundido
                     </button>
                 </div>
             </div>
 
-            <!-- SECCIÓN DE RESULTADOS DINÁMICOS -->
-            <div id="resultsContainer" class="space-y-4 pt-2">
-                <!-- Estado inicial: Esperando consulta -->
-                <div id="initialState" class="text-center py-12 text-slate-600">
-                    <i class="fa-solid fa-gavel text-5xl mb-3 opacity-20"></i>
-                    <p class="text-sm font-medium">Introduzca un término o use un acceso rápido para verificar la infracción.</p>
+            <!-- RESULTADOS -->
+            <div id="iaResultsContainer" class="space-y-3">
+                <!-- Estado inicial -->
+                <div id="iaInitialState" class="text-center py-12 text-slate-600">
+                    <i class="fa-solid fa-wand-magic-sparkles text-5xl mb-3 opacity-20"></i>
+                    <p class="text-sm font-medium">Describe una infracción para encontrar el artículo</p>
                 </div>
 
-                <!-- Tarjeta de resultado dinámica (Se generará con JavaScript) -->
-                <div id="resultCard" class="hidden animate-fadeIn"></div>
+                <!-- Resultados dinámicos -->
+                <div id="iaResultsList" class="space-y-2"></div>
             </div>
 
         </main>
@@ -1251,13 +1256,13 @@
                     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
                         <p class="text-[11px] font-black text-emerald-400 uppercase tracking-wider">Hecho denunciado</p>
                         <div>
-    <label class="text-[10px] text-slate-500 font-semibold block mb-1">Artículo infringido (🤖 Búsqueda Inteligente)</label>
-    <input type="text" id="multa-articulo-search" placeholder="Describe: 'rebasar línea continua', 'sin cinturón', 'exceso velocidad'..."
-        class="w-full bg-slate-950 text-white text-sm rounded-xl px-3 py-2.5 border border-slate-700 focus:border-emerald-500 focus:outline-none transition placeholder-slate-600"
-        oninput="buscarArticulosIA()">
-    <div id="multa-articulo-sugerencias" class="mt-2 max-h-64 overflow-y-auto space-y-1"></div>
-    <input type="hidden" id="multa-articulo" value="">
-</div>
+                            <label class="text-[10px] text-slate-500 font-semibold block mb-1">Artículo infringido (🤖 Búsqueda Inteligente)</label>
+                            <input type="text" id="multa-articulo-search" placeholder="Describe: 'rebasar línea continua', 'sin cinturón', 'exceso velocidad'..."
+                                class="w-full bg-slate-950 text-white text-sm rounded-xl px-3 py-2.5 border border-slate-700 focus:border-emerald-500 focus:outline-none transition placeholder-slate-600"
+                                oninput="buscarArticulosIA()">
+                            <div id="multa-articulo-sugerencias" class="mt-2 max-h-64 overflow-y-auto space-y-1"></div>
+                            <input type="hidden" id="multa-articulo" value="">
+                        </div>
                         <div>
                             <label class="text-[10px] text-slate-500 font-semibold block mb-1">Descripción del hecho</label>
                             <textarea id="multa-hecho" rows="4" placeholder="Describe el hecho denunciado..."
@@ -2319,9 +2324,9 @@
         <footer class="absolute bottom-0 w-full bg-slate-950 border-t border-slate-800">
             <!-- Primera fila de navegación -->
             <div class="flex">
-                <button id="tab-infracciones" onclick="switchTab('infracciones')" class="text-blue-500 flex flex-col items-center gap-0.5 py-2 px-3 font-semibold flex-shrink-0 flex-1 min-w-[64px]">
-                    <i class="fa-solid fa-book-bookmark text-base"></i>
-                    <span class="text-[9px]">Infracciones</span>
+                <button id="tab-ia-search" onclick="switchTab('ia-search')" class="text-blue-500 flex flex-col items-center gap-0.5 py-2 px-3 font-semibold flex-shrink-0 flex-1 min-w-[64px]">
+                    <i class="fa-solid fa-wand-magic-sparkles text-base"></i>
+                    <span class="text-[9px]">🤖 IA</span>
                 </button>
                 <button id="tab-cuadro" onclick="switchTab('cuadro')" class="text-slate-500 hover:text-slate-300 flex flex-col items-center gap-0.5 py-2 px-3 font-semibold flex-shrink-0 flex-1 min-w-[64px]">
                     <i class="fa-solid fa-table-list text-base"></i>
@@ -8371,7 +8376,7 @@
 
         function switchTab(tab) {
             const views = {
-                infracciones:  document.getElementById('view-infracciones'),
+                'ia-search':   document.getElementById('view-ia-search'),
                 cuadro:        document.getElementById('view-cuadro'),
                 delitos:       document.getElementById('view-delitos'),
                 comparecencia: document.getElementById('view-comparecencia'),
@@ -8387,7 +8392,7 @@
                 'foro-admin':  document.getElementById('view-foro-admin'),
             };
             const tabs = {
-                infracciones:  document.getElementById('tab-infracciones'),
+                'ia-search':   document.getElementById('tab-ia-search'),
                 cuadro:        document.getElementById('tab-cuadro'),
                 delitos:       document.getElementById('tab-delitos'),
                 comparecencia: document.getElementById('tab-comparecencia'),
@@ -8400,7 +8405,7 @@
                 'admin-panel': document.getElementById('tab-admin-panel'),
             };
             const activeColors = {
-                infracciones:  'text-blue-500',
+                'ia-search':   'text-blue-500',
                 cuadro:        'text-blue-500',
                 delitos:       'text-rose-400',
                 comparecencia: 'text-violet-400',
@@ -12725,20 +12730,23 @@
                 return;
             }
 
+            // Obtener todos los artículos
             const articulos = Object.keys(infracciones).map(key => ({
                 id: key,
                 ...infracciones[key]
             }));
 
+            // Calcular similitud para cada artículo
             const resultados = articulos
                 .map(art => ({
                     ...art,
                     score: calcularSimilitud(query, art)
                 }))
-                .filter(art => art.score > 0.3)
+                .filter(art => art.score > 0.3) // Filtrar resultados con baja similitud
                 .sort((a, b) => b.score - a.score)
-                .slice(0, 8);
+                .slice(0, 8); // Máximo 8 resultados
 
+            // Mostrar sugerencias
             if (resultados.length === 0) {
                 sugDiv.innerHTML = '<p class="text-xs text-slate-500 p-2">No se encontraron artículos similares</p>';
                 return;
@@ -12757,29 +12765,36 @@
         function calcularSimilitud(query, articulo) {
             let score = 0;
 
+            // Convertir a minúsculas
             const titulo = articulo.titulo.toLowerCase();
             const hecho = articulo.hecho.toLowerCase();
             const palabras = articulo.palabrasClave.toLowerCase();
             const precepto = articulo.precepto.toLowerCase();
 
+            // Palabras clave de la búsqueda
             const queryWords = query.split(/\s+/).filter(w => w.length > 2);
 
+            // 1. Coincidencia exacta en palabras clave (peso alto)
             queryWords.forEach(word => {
                 if (palabras.includes(word)) score += 0.5;
             });
 
+            // 2. Coincidencia en título (peso medio-alto)
             queryWords.forEach(word => {
                 if (titulo.includes(word)) score += 0.3;
             });
 
+            // 3. Coincidencia en descripción del hecho (peso medio)
             queryWords.forEach(word => {
                 if (hecho.includes(word)) score += 0.2;
             });
 
+            // 4. Coincidencia en artículo (peso bajo)
             if (query.match(/art\.\s*\d+/i) && precepto.includes(query.replace(/\s+/g, ''))) {
                 score += 0.4;
             }
 
+            // Normalizar score entre 0 y 1
             return Math.min(score / (queryWords.length * 0.5), 1);
         }
 
@@ -12788,13 +12803,151 @@
             document.getElementById('multa-articulo-search').value = precepto;
             document.getElementById('multa-articulo-sugerencias').innerHTML = '';
 
+            // Mostrar toast
             showToast(`✓ Artículo seleccionado: ${precepto}`);
 
+            // Opcional: cargar datos del artículo automáticamente
             const articulo = infracciones[idArticulo];
             if (articulo && document.getElementById('multa-hecho').value === '') {
                 document.getElementById('multa-hecho').value = articulo.hecho;
             }
         }
+
+        // ===== BÚSQUEDA INTELIGENTE IA (VISTA PRINCIPAL) =====
+
+        function buscarArticulosIA_Main() {
+            const query = document.getElementById('iaSearchInput').value.trim().toLowerCase();
+            const resultsList = document.getElementById('iaResultsList');
+            const initialState = document.getElementById('iaInitialState');
+
+            if (!query || query.length < 2) {
+                resultsList.innerHTML = '';
+                initialState.classList.remove('hidden');
+                return;
+            }
+
+            initialState.classList.add('hidden');
+
+            const articulos = Object.keys(infracciones).map(key => ({
+                id: key,
+                ...infracciones[key]
+            }));
+
+            const resultados = articulos
+                .map(art => ({
+                    ...art,
+                    score: calcularSimilitud(query, art)
+                }))
+                .filter(art => art.score > 0.25)
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 10);
+
+            if (resultados.length === 0) {
+                resultsList.innerHTML = '<p class="text-center text-xs text-slate-500 py-8">No se encontraron infracciones similares</p>';
+                return;
+            }
+
+            resultsList.innerHTML = resultados.map(art => `
+                <div class="bg-slate-900 border border-slate-800 hover:border-blue-500/50 rounded-2xl p-4 transition cursor-pointer" onclick="mostrarDetalleIA('${art.id}')">
+                    <div class="flex items-start justify-between gap-3 mb-2">
+                        <div class="flex-1">
+                            <p class="text-xs font-bold text-blue-400">${art.precepto}</p>
+                            <p class="text-sm font-bold text-white mt-1">${art.titulo}</p>
+                        </div>
+                        <div class="text-right flex-shrink-0">
+                            <p class="text-xs font-bold text-emerald-400">📊 ${(art.score * 100).toFixed(0)}%</p>
+                            <p class="text-[9px] text-slate-500 mt-0.5">Similitud</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 line-clamp-2 mb-3">${art.hecho}</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-1 rounded">${art.calificacion}</span>
+                        <button onclick="crearMultaDesdeIA('${art.id}', event)" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded-lg transition active:scale-95">
+                            + Multa
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function buscarEnIA(query) {
+            document.getElementById('iaSearchInput').value = query;
+            buscarArticulosIA_Main();
+        }
+
+        function mostrarDetalleIA(idArticulo) {
+            const articulo = infracciones[idArticulo];
+            if (!articulo) return;
+
+            const detalle = `
+                <div class="fixed inset-0 z-50 flex items-end justify-center" style="background:rgba(0,0,0,0.8)">
+                    <div class="bg-slate-900 w-full max-w-md max-h-[85vh] overflow-y-auto custom-scrollbar rounded-t-2xl p-4 space-y-4 border-t border-slate-800">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">${articulo.precepto}</p>
+                                <h3 class="text-base font-bold text-white mt-2">${articulo.titulo}</h3>
+                            </div>
+                            <button onclick="this.closest('.fixed').remove()" class="text-slate-400 hover:text-white text-2xl leading-none">×</button>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-lg p-3 border border-slate-700">
+                            <p class="text-[10px] text-slate-400 font-bold mb-2">HECHO DENUNCIADO</p>
+                            <p class="text-sm text-slate-200">${articulo.hecho}</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="bg-slate-800 rounded-lg p-3 border border-slate-700">
+                                <p class="text-[10px] text-slate-400 font-bold mb-1">CALIFICACIÓN</p>
+                                <p class="text-sm font-bold text-white">${articulo.calificacion}</p>
+                            </div>
+                            <div class="bg-slate-800 rounded-lg p-3 border border-slate-700">
+                                <p class="text-[10px] text-slate-400 font-bold mb-1">SANCIÓN</p>
+                                <p class="text-sm font-bold text-emerald-400">${articulo.sancion}</p>
+                            </div>
+                            <div class="bg-slate-800 rounded-lg p-3 border border-slate-700 col-span-2">
+                                <p class="text-[10px] text-slate-400 font-bold mb-1">PUNTOS</p>
+                                <p class="text-sm font-bold text-red-400">${articulo.puntos}</p>
+                            </div>
+                        </div>
+
+                        ${articulo.observaciones ? `
+                            <div class="bg-blue-900/30 border border-blue-800 rounded-lg p-3">
+                                <p class="text-[10px] text-blue-400 font-bold mb-1">📝 OBSERVACIONES</p>
+                                <p class="text-xs text-blue-200">${articulo.observaciones}</p>
+                            </div>
+                        ` : ''}
+
+                        <button onclick="crearMultaDesdeIA_Modal('${idArticulo}')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition active:scale-95">
+                            Crear Multa
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', detalle);
+        }
+
+        function crearMultaDesdeIA(idArticulo, event) {
+            event.stopPropagation();
+            crearMultaDesdeIA_Modal(idArticulo);
+        }
+
+        function crearMultaDesdeIA_Modal(idArticulo) {
+            const articulo = infracciones[idArticulo];
+            if (!articulo) return;
+
+            document.getElementById('multa-articulo').value = articulo.precepto;
+            document.getElementById('multa-hecho').value = articulo.hecho;
+
+            document.querySelectorAll('.fixed').forEach(el => {
+                if (el.style.background && el.style.background.includes('rgba')) el.remove();
+            });
+
+            switchTab('cuadro');
+            multasShowForm();
+            showToast(`✓ Artículo ${articulo.precepto} seleccionado`);
+        }
+
     </script>
 </body>
 </html>
