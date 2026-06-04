@@ -2389,6 +2389,16 @@
 
     <!-- LÓGICA -->
     <script>
+        // ===== CONSTANTES GLOBALES (DEBE ESTAR AL INICIO) =====
+        const IAP_USERS_KEY   = 'iap_users';
+        const IAP_SESSION_KEY = 'iap_session';
+        const IAP_USER_ROLES_KEY = 'iap_user_roles';
+        const IAP_ROLES_AUDIT_KEY = 'iap_roles_audit';
+        const IAP_THREADS_KEY = 'iap_threads';
+        const IAP_POSTS_KEY = 'iap_posts';
+        const IAP_MODERATORS_KEY = 'iap_moderators';
+        const IAP_INDULTOS_KEY = 'iap_indultos';
+
         const database = {
 
     "delito_alcohol": {
@@ -8557,12 +8567,6 @@
         // =====================================================
         // AUTENTICACIÓN
         // =====================================================
-
-        const IAP_USERS_KEY   = 'iap_users';
-        const IAP_SESSION_KEY = 'iap_session';
-        const IAP_USER_ROLES_KEY = 'iap_user_roles';
-        const IAP_ROLES_AUDIT_KEY = 'iap_roles_audit';
-        const IAP_INDULTOS_KEY = 'iap_indultos';
 
         // Hash simple (no criptográfico — suficiente para protección básica local)
         function simpleHash(str) {
