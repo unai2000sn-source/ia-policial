@@ -1251,10 +1251,13 @@
                     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
                         <p class="text-[11px] font-black text-emerald-400 uppercase tracking-wider">Hecho denunciado</p>
                         <div>
-                            <label class="text-[10px] text-slate-500 font-semibold block mb-1">Artículo infringido</label>
-                            <input type="text" id="multa-articulo" placeholder="Ej: Art. 94.2.g del RD 1428/2003"
-                                class="w-full bg-slate-950 text-white text-sm rounded-xl px-3 py-2.5 border border-slate-700 focus:border-emerald-500 focus:outline-none transition placeholder-slate-600">
-                        </div>
+    <label class="text-[10px] text-slate-500 font-semibold block mb-1">Artículo infringido (🤖 Búsqueda Inteligente)</label>
+    <input type="text" id="multa-articulo-search" placeholder="Describe: 'rebasar línea continua', 'sin cinturón', 'exceso velocidad'..."
+        class="w-full bg-slate-950 text-white text-sm rounded-xl px-3 py-2.5 border border-slate-700 focus:border-emerald-500 focus:outline-none transition placeholder-slate-600"
+        oninput="buscarArticulosIA()">
+    <div id="multa-articulo-sugerencias" class="mt-2 max-h-64 overflow-y-auto space-y-1"></div>
+    <input type="hidden" id="multa-articulo" value="">
+</div>
                         <div>
                             <label class="text-[10px] text-slate-500 font-semibold block mb-1">Descripción del hecho</label>
                             <textarea id="multa-hecho" rows="4" placeholder="Describe el hecho denunciado..."
