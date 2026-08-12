@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Registro Íntimo — Estadísticas personales</title>
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --surface-2:      #ffffff;
+    --page:           #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --gridline:       #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --success:        #006300;
+
+    --series-1: #2a78d6; /* relaciones */
+    --series-2: #eb6834; /* oral */
+    --series-3: #1baf7a; /* masturbación */
+    --series-4: #eda100; /* otro */
+
+    --seq-1: #cde2fb;
+    --seq-2: #6da7ec;
+    --seq-3: #2a78d6;
+    --seq-4: #184f95;
+
+    --accent: #2a78d6;
+    --danger: #d03b3b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --surface-2:      #212120;
+      --page:           #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --gridline:       #2c2c2a;
+      --baseline:       #383835;
+      --border:         rgba(255,255,255,0.10);
+      --success:        #0ca30c;
+
+      --series-1: #3987e5;
+      --series-2: #d95926;
+      --series-3: #199e70;
+      --series-4: #c98500;
+
+      --seq-1: #1c2f45;
+      --seq-2: #1c5cab;
+      --seq-3: #2a78d6;
+      --seq-4: #6da7ec;
+
+      --accent: #3987e5;
+      --danger: #e66767;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-1:      #1a1a19;
+    --surface-2:      #212120;
+    --page:           #0d0d0d;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --gridline:       #2c2c2a;
+    --baseline:       #383835;
+    --border:         rgba(255,255,255,0.10);
+    --success:        #0ca30c;
+
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+
+    --seq-1: #1c2f45;
+    --seq-2: #1c5cab;
+    --seq-3: #2a78d6;
+    --seq-4: #6da7ec;
+
+    --accent: #3987e5;
+    --danger: #e66767;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+
+  header.top {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  header.top .bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; max-width: 980px; margin: 0 auto;
+  }
+  header.top .brand { font-weight: 700; font-size: 15px; display:flex; align-items:center; gap:8px; }
+  .theme-toggle {
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--text-primary);
+    border-radius: 999px; width: 36px; height: 36px; cursor: pointer; font-size: 16px;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .hero { padding: 56px 20px 40px; text-align: center; }
+  .hero h1 { font-size: clamp(28px, 4vw, 40px); margin: 0 0 12px; letter-spacing: -0.02em; }
+  .hero p.lead { color: var(--text-secondary); font-size: 16px; max-width: 560px; margin: 0 auto 22px; line-height: 1.55; }
+  .privacy-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12.5px; color: var(--text-secondary);
+    border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px;
+    margin-bottom: 22px; background: var(--surface-2);
+  }
+  .cta {
+    display: inline-block; background: var(--accent); color: #fff; text-decoration: none;
+    padding: 12px 22px; border-radius: 10px; font-weight: 600; font-size: 15px;
+    border: none; cursor: pointer;
+  }
+  .hero-stat {
+    margin-top: 28px; font-size: 14px; color: var(--text-secondary);
+  }
+  .hero-stat strong { color: var(--text-primary); font-size: 15px; }
+
+  section { padding: 28px 0; }
+  .card {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px;
+    padding: 20px; margin-bottom: 18px;
+  }
+  .card h2 { margin: 0 0 4px; font-size: 17px; }
+  .card .sub { color: var(--text-secondary); font-size: 13px; margin: 0 0 16px; }
+
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 12px; }
+  label { display:block; font-size: 12.5px; color: var(--text-secondary); margin-bottom: 6px; font-weight: 600; }
+  input, select, textarea {
+    width: 100%; background: var(--surface-2); color: var(--text-primary);
+    border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; font-size: 14px;
+    font-family: inherit;
+  }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .cat-picker { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cat-btn {
+    display: flex; align-items: center; gap: 6px;
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--text-primary);
+    border-radius: 999px; padding: 8px 14px; font-size: 13.5px; cursor: pointer;
+  }
+  .cat-btn[aria-pressed="true"] {
+    border-color: var(--dot, var(--accent)); background: color-mix(in srgb, var(--dot, var(--accent)) 14%, var(--surface-2));
+    font-weight: 700;
+  }
+  .cat-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--dot); flex-shrink:0; }
+
+  .submit-row { display:flex; justify-content:flex-end; margin-top: 14px; }
+  button.primary {
+    background: var(--accent); color:#fff; border:none; border-radius:8px;
+    padding: 10px 18px; font-size:14px; font-weight:600; cursor:pointer;
+  }
+  button.ghost {
+    background: transparent; color: var(--text-secondary); border:1px solid var(--border);
+    border-radius:8px; padding: 8px 14px; font-size: 13px; cursor:pointer;
+  }
+  button.danger-ghost {
+    background: transparent; color: var(--danger); border:1px solid var(--danger);
+    border-radius:8px; padding: 8px 14px; font-size: 13px; cursor:pointer;
+  }
+
+  .toolbar { display:flex; align-items:center; justify-content:space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+  .toolbar .year-select { max-width: 160px; }
+
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; }
+  .tile {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px;
+  }
+  .tile .label { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
+  .tile .value { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
+  .tile .value small { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+
+  .legend { display:flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px; font-size: 13px; color: var(--text-secondary); }
+  .legend-item { display:flex; align-items:center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+  svg.chart { width: 100%; height: auto; display:block; overflow: visible; }
+  .axis-label { fill: var(--text-muted); font-size: 10px; }
+  .bar-label { fill: var(--text-secondary); font-size: 12px; }
+  .value-label { fill: var(--text-primary); font-size: 12px; font-weight: 600; }
+  .gridline { stroke: var(--gridline); stroke-width: 1; }
+
+  .chart-tooltip {
+    position: fixed; pointer-events: none; z-index: 50;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 7px 10px; font-size: 12.5px; color: var(--text-primary);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    opacity: 0; transform: translateY(2px); transition: opacity .08s ease;
+    max-width: 220px;
+  }
+  .chart-tooltip.show { opacity: 1; }
+  .chart-tooltip .t-title { font-weight: 700; margin-bottom: 2px; }
+  .chart-tooltip .t-row { display:flex; align-items:center; gap:6px; color: var(--text-secondary); }
+
+  .empty-state { text-align:center; padding: 30px 10px; color: var(--text-secondary); font-size: 14px; }
+
+  table.history { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  table.history th {
+    text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: .03em;
+    color: var(--text-muted); padding: 8px 6px; border-bottom: 1px solid var(--border);
+  }
+  table.history td { padding: 9px 6px; border-bottom: 1px solid var(--gridline); vertical-align: top; }
+  table.history tr:last-child td { border-bottom: none; }
+  .history-wrap { max-height: 360px; overflow-y: auto; }
+  .cat-chip { display:inline-flex; align-items:center; gap:5px; font-size:12.5px; }
+  .del-btn {
+    background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 15px;
+    padding: 2px 6px; border-radius: 6px;
+  }
+  .del-btn:hover { color: var(--danger); background: color-mix(in srgb, var(--danger) 12%, transparent); }
+
+  .filter-row { display:flex; flex-wrap:wrap; gap: 8px; margin-bottom: 12px; }
+  .chip-btn {
+    border:1px solid var(--border); background: var(--surface-2); color: var(--text-secondary);
+    border-radius: 999px; padding: 6px 12px; font-size: 12.5px; cursor: pointer;
+  }
+  .chip-btn[aria-pressed="true"] { background: var(--accent); color:#fff; border-color: var(--accent); font-weight:600; }
+
+  .data-actions { display:flex; flex-wrap: wrap; gap: 10px; }
+
+  footer { padding: 30px 20px 50px; text-align:center; color: var(--text-muted); font-size: 12.5px; line-height: 1.6; }
+
+  @media (max-width: 560px) {
+    table.history th:nth-child(4), table.history td:nth-child(4) { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="bar">
+    <div class="brand">🔒 Registro Íntimo</div>
+    <button class="theme-toggle" id="themeToggle" title="Cambiar tema" aria-label="Cambiar tema">🌓</button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="privacy-badge">🔒 100% local — tus datos nunca salen de este dispositivo</div>
+    <h1>Lleva el registro de tu vida sexual</h1>
+    <p class="lead">Anota tus relaciones, sexo oral, masturbación y más. Consulta automáticamente cuántas veces al año, por categoría, por mes y por semana — todo guardado solo en tu navegador.</p>
+    <a href="#app" class="cta">Empezar a registrar</a>
+    <div class="hero-stat" id="heroStat"></div>
+  </div>
+</div>
+
+<div class="wrap" id="app">
+
+  <section>
+    <div class="card">
+      <h2>Nuevo registro</h2>
+      <p class="sub">Añade una entrada. Puedes indicar cuántas veces si fueron varias en el mismo día.</p>
+      <form id="entryForm">
+        <div class="form-grid">
+          <div>
+            <label for="f-date">Fecha</label>
+            <input type="date" id="f-date" required>
+          </div>
+          <div>
+            <label for="f-qty">Cantidad</label>
+            <input type="number" id="f-qty" min="1" value="1" required>
+          </div>
+          <div style="grid-column: 1 / -1;">
+            <label>Categoría</label>
+            <div class="cat-picker" id="catPicker" role="radiogroup" aria-label="Categoría"></div>
+          </div>
+          <div id="customLabelWrap" style="display:none;">
+            <label for="f-custom">Especifica "Otro"</label>
+            <input type="text" id="f-custom" maxlength="40" placeholder="p. ej. Juegos previos">
+          </div>
+          <div style="grid-column: 1 / -1;">
+            <label for="f-note">Nota (opcional)</label>
+            <input type="text" id="f-note" maxlength="120" placeholder="Opcional">
+          </div>
+        </div>
+        <div class="submit-row">
+          <button type="submit" class="primary">Guardar registro</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section>
+    <div class="toolbar">
+      <h2 style="margin:0;">Resumen</h2>
+      <div class="year-select">
+        <select id="yearSelect"></select>
+      </div>
+    </div>
+
+    <div class="tiles" id="tiles" style="margin-bottom: 18px;"></div>
+
+    <div class="card">
+      <h2>Por categoría</h2>
+      <p class="sub">Total de cada tipo en el año seleccionado.</p>
+      <div id="catLegend" class="legend"></div>
+      <div id="catChart"></div>
+    </div>
+
+    <div class="card">
+      <h2>Evolución mensual</h2>
+      <p class="sub">Registros por mes, desglosados por categoría.</p>
+      <div id="monthLegend" class="legend"></div>
+      <div id="monthChart"></div>
+    </div>
+
+    <div class="card">
+      <h2>Mapa del año</h2>
+      <p class="sub">Actividad diaria — más oscuro/intenso significa más registros ese día.</p>
+      <div id="heatmapChart"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="card">
+      <h2>Historial</h2>
+      <p class="sub">Todos tus registros del año seleccionado.</p>
+      <div class="filter-row" id="historyFilters"></div>
+      <div class="history-wrap">
+        <table class="history">
+          <thead>
+            <tr><th>Fecha</th><th>Categoría</th><th>Cant.</th><th>Nota</th><th></th></tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+        <div class="empty-state" id="historyEmpty" style="display:none;">Todavía no hay registros para este año.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="card">
+      <h2>Tus datos</h2>
+      <p class="sub">Guardados solo en este navegador. Haz una copia de seguridad de vez en cuando por si cambias de dispositivo o borras el caché.</p>
+      <div class="data-actions">
+        <button class="ghost" id="exportBtn">⬇️ Exportar copia de seguridad</button>
+        <button class="ghost" id="importBtn">⬆️ Importar copia de seguridad</button>
+        <input type="file" id="importFile" accept="application/json" style="display:none;">
+        <button class="danger-ghost" id="clearBtn">🗑️ Borrar todos los datos</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Esta página funciona enteramente en tu navegador: los registros se guardan con <code>localStorage</code> y nunca se envían a ningún servidor.<br>
+  Practica siempre sexo consentido y seguro.
+</footer>
+
+<div class="chart-tooltip" id="tooltip"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STORAGE_KEY = "intimateTracker.entries.v1";
+  var THEME_KEY = "intimateTracker.theme";
+
+  var CATEGORIES = [
+    { id: "relaciones",    label: "Relaciones sexuales", emoji: "👫", var: "--series-1" },
+    { id: "oral",          label: "Sexo oral",           emoji: "👄", var: "--series-2" },
+    { id: "masturbacion",  label: "Masturbación",        emoji: "✋", var: "--series-3" },
+    { id: "otro",          label: "Otro",                emoji: "✨", var: "--series-4" }
+  ];
+  var CAT_BY_ID = {};
+  CATEGORIES.forEach(function(c){ CAT_BY_ID[c.id] = c; });
+
+  var MONTHS = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+
+  // ---------- storage ----------
+  function loadEntries(){
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch(e){ return []; }
+  }
+  function saveEntries(entries){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  }
+  var entries = loadEntries();
+
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+  // ---------- theme ----------
+  var themeToggle = document.getElementById("themeToggle");
+  function applyTheme(t){
+    if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    else document.documentElement.removeAttribute("data-theme");
+  }
+  var savedTheme = localStorage.getItem(THEME_KEY);
+  if (savedTheme) applyTheme(savedTheme);
+  themeToggle.addEventListener("click", function(){
+    var current = document.documentElement.getAttribute("data-theme");
+    var next = current === "dark" ? "light" : (current === "light" ? null : "dark");
+    if (next) { applyTheme(next); localStorage.setItem(THEME_KEY, next); }
+    else { applyTheme(null); localStorage.removeItem(THEME_KEY); }
+  });
+
+  // ---------- tooltip ----------
+  var tooltip = document.getElementById("tooltip");
+  function showTooltip(html, x, y){
+    tooltip.innerHTML = html;
+    tooltip.style.left = (x + 14) + "px";
+    tooltip.style.top = (y + 14) + "px";
+    tooltip.classList.add("show");
+  }
+  function hideTooltip(){ tooltip.classList.remove("show"); }
+
+  // ---------- category picker ----------
+  var catPicker = document.getElementById("catPicker");
+  var selectedCat = CATEGORIES[0].id;
+  CATEGORIES.forEach(function(c){
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "cat-btn";
+    btn.setAttribute("role","radio");
+    btn.setAttribute("aria-pressed", c.id === selectedCat ? "true" : "false");
+    btn.style.setProperty("--dot", "var(" + c.var + ")");
+    btn.innerHTML = '<span class="cat-dot"></span>' + c.emoji + " " + c.label;
+    btn.addEventListener("click", function(){
+      selectedCat = c.id;
+      Array.prototype.forEach.call(catPicker.children, function(b, i){
+        b.setAttribute("aria-pressed", CATEGORIES[i].id === selectedCat ? "true" : "false");
+      });
+      document.getElementById("customLabelWrap").style.display = selectedCat === "otro" ? "block" : "none";
+    });
+    catPicker.appendChild(btn);
+  });
+
+  // ---------- form ----------
+  var dateInput = document.getElementById("f-date");
+  dateInput.value = new Date().toISOString().slice(0,10);
+
+  document.getElementById("entryForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var date = dateInput.value;
+    if (!date) return;
+    var qty = Math.max(1, parseInt(document.getElementById("f-qty").value, 10) || 1);
+    var note = document.getElementById("f-note").value.trim().slice(0,120);
+    var customLabel = document.getElementById("f-custom").value.trim().slice(0,40);
+
+    entries.push({
+      id: uid(),
+      date: date,
+      category: selectedCat,
+      customLabel: selectedCat === "otro" ? customLabel : "",
+      qty: qty,
+      note: note
+    });
+    saveEntries(entries);
+
+    document.getElementById("f-note").value = "";
+    document.getElementById("f-custom").value = "";
+    document.getElementById("f-qty").value = "1";
+
+    var entryYear = parseInt(date.slice(0,4), 10);
+    populateYearSelect();
+    yearSelect.value = String(entryYear);
+    render();
+  });
+
+  // ---------- year select ----------
+  var yearSelect = document.getElementById("yearSelect");
+  function allYears(){
+    var years = {};
+    entries.forEach(function(en){ years[en.date.slice(0,4)] = true; });
+    years[new Date().getFullYear()] = true;
+    return Object.keys(years).map(Number).sort(function(a,b){ return b - a; });
+  }
+  function populateYearSelect(){
+    var prev = yearSelect.value;
+    var years = allYears();
+    yearSelect.innerHTML = years.map(function(y){ return '<option value="'+y+'">'+y+'</option>'; }).join("");
+    yearSelect.value = years.indexOf(Number(prev)) !== -1 ? prev : String(years[0]);
+  }
+  yearSelect.addEventListener("change", render);
+  populateYearSelect();
+
+  // ---------- history filter ----------
+  var historyFilter = "all";
+  var historyFilters = document.getElementById("historyFilters");
+  function renderHistoryFilters(){
+    var opts = [{id:"all", label:"Todas", emoji:"📋"}].concat(CATEGORIES);
+    historyFilters.innerHTML = "";
+    opts.forEach(function(o){
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "chip-btn";
+      btn.setAttribute("aria-pressed", historyFilter === o.id ? "true" : "false");
+      btn.textContent = (o.emoji || "") + " " + o.label;
+      btn.addEventListener("click", function(){
+        historyFilter = o.id;
+        renderHistoryFilters();
+        renderHistory();
+      });
+      historyFilters.appendChild(btn);
+    });
+  }
+
+  // ---------- aggregation ----------
+  function entriesForYear(year){
+    return entries.filter(function(en){ return en.date.slice(0,4) === String(year); });
+  }
+  function sumQty(list){ return list.reduce(function(s,e){ return s + e.qty; }, 0); }
+
+  function byCategory(list){
+    var out = {};
+    CATEGORIES.forEach(function(c){ out[c.id] = 0; });
+    list.forEach(function(en){ out[en.category] = (out[en.category] || 0) + en.qty; });
+    return out;
+  }
+
+  function byMonth(list){
+    var out = [];
+    for (var m=0;m<12;m++){
+      var row = {};
+      CATEGORIES.forEach(function(c){ row[c.id] = 0; });
+      out.push(row);
+    }
+    list.forEach(function(en){
+      var m = parseInt(en.date.slice(5,7),10) - 1;
+      out[m][en.category] = (out[m][en.category] || 0) + en.qty;
+    });
+    return out;
+  }
+
+  function dailyTotals(year){
+    var out = {};
+    entries.forEach(function(en){
+      if (en.date.slice(0,4) === String(year)) out[en.date] = (out[en.date] || 0) + en.qty;
+    });
+    return out;
+  }
+
+  function currentStreak(){
+    var days = {};
+    entries.forEach(function(en){ days[en.date] = true; });
+    var d = new Date();
+    d.setHours(0,0,0,0);
+    function key(dt){ return dt.toISOString().slice(0,10); }
+    if (!days[key(d)]) d.setDate(d.getDate() - 1);
+    var streak = 0;
+    while (days[key(d)]) {
+      streak++;
+      d.setDate(d.getDate() - 1);
+    }
+    return streak;
+  }
+
+  function weeksElapsedInYear(year){
+    var now = new Date();
+    var currentYear = now.getFullYear();
+    var start = new Date(year, 0, 1);
+    var end = (Number(year) === currentYear) ? now : new Date(year, 11, 31);
+    var days = Math.max(1, Math.round((end - start) / 86400000) + 1);
+    return Math.max(1, days / 7);
+  }
+
+  // ---------- svg helpers ----------
+  function svgEl(w, h, extraClass){
+    return '<svg class="chart '+(extraClass||"")+'" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="xMinYMin meet">';
+  }
+
+  function renderCategoryChart(container, totals, year){
+    var max = Math.max(1, CATEGORIES.reduce(function(m,c){ return Math.max(m, totals[c.id]); }, 0));
+    var w = 640, rowH = 40, gap = 10, leftPad = 130, rightPad = 46, topPad = 6;
+    var h = topPad + CATEGORIES.length * (rowH + gap);
+    var barMaxW = w - leftPad - rightPad;
+
+    var svg = svgEl(w, h);
+    CATEGORIES.forEach(function(c, i){
+      var y = topPad + i * (rowH + gap);
+      var val = totals[c.id];
+      var barW = max ? (val / max) * barMaxW : 0;
+      var cy = y + rowH/2;
+      svg += '<line class="gridline" x1="'+leftPad+'" x2="'+leftPad+'" y1="'+y+'" y2="'+(y+rowH)+'"></line>';
+      svg += '<text class="bar-label" x="'+(leftPad-10)+'" y="'+(cy+4)+'" text-anchor="end">'+c.emoji+' '+c.label+'</text>';
+      svg += '<rect data-tip="'+c.label+': '+val+'" data-color="var('+c.var+')" style="fill:var('+c.var+')" '+
+             'x="'+leftPad+'" y="'+(y + rowH*0.22)+'" width="'+Math.max(barW,3)+'" height="'+(rowH*0.56)+'" rx="4"></rect>';
+      svg += '<text class="value-label" x="'+(leftPad + Math.max(barW,3) + 8)+'" y="'+(cy+4)+'">'+val+'</text>';
+    });
+    svg += '</svg>';
+    container.innerHTML = svg;
+    attachBarTooltips(container);
+  }
+
+  function renderMonthChart(container, monthly){
+    var w = 640, h = 240, leftPad = 30, rightPad = 6, topPad = 10, bottomPad = 24;
+    var plotW = w - leftPad - rightPad, plotH = h - topPad - bottomPad;
+    var totals = monthly.map(function(row){ return CATEGORIES.reduce(function(s,c){ return s + row[c.id]; }, 0); });
+    var max = Math.max(1, Math.max.apply(null, totals));
+    var slotW = plotW / 12;
+    var barW = Math.min(30, slotW * 0.6);
+    var gapPx = 2;
+
+    var svg = svgEl(w, h);
+    [0,0.25,0.5,0.75,1].forEach(function(f){
+      var y = topPad + plotH * (1 - f);
+      svg += '<line class="gridline" x1="'+leftPad+'" x2="'+(w-rightPad)+'" y1="'+y+'" y2="'+y+'"></line>';
+    });
+
+    monthly.forEach(function(row, i){
+      var x = leftPad + slotW * i + (slotW - barW)/2;
+      var yCursor = topPad + plotH;
+      CATEGORIES.forEach(function(c){
+        var val = row[c.id];
+        if (!val) return;
+        var segH = (val / max) * plotH;
+        var segY = yCursor - segH;
+        svg += '<rect data-tip="'+MONTHS[i]+' · '+c.label+': '+val+'" style="fill:var('+c.var+')" '+
+               'x="'+x+'" y="'+(segY + (val ? gapPx/2 : 0))+'" width="'+barW+'" height="'+Math.max(segH - gapPx,0)+'" rx="3"></rect>';
+        yCursor = segY;
+      });
+      svg += '<text class="axis-label" x="'+(x + barW/2)+'" y="'+(h - 6)+'" text-anchor="middle">'+MONTHS[i]+'</text>';
+    });
+    svg += '</svg>';
+    container.innerHTML = svg;
+    attachBarTooltips(container);
+  }
+
+  function seqColor(count, max){
+    if (!count) return "var(--gridline)";
+    var ratio = count / max;
+    if (ratio <= 0.25) return "var(--seq-1)";
+    if (ratio <= 0.5) return "var(--seq-2)";
+    if (ratio <= 0.75) return "var(--seq-3)";
+    return "var(--seq-4)";
+  }
+
+  function renderHeatmap(container, year){
+    var totals = dailyTotals(year);
+    var max = Math.max(1, Math.max.apply(null, Object.keys(totals).map(function(k){ return totals[k]; }).concat([0])));
+
+    var start = new Date(year, 0, 1);
+    var end = new Date(year, 11, 31);
+    var startPad = start.getDay();
+    var days = [];
+    for (var d = new Date(start); d <= end; d.setDate(d.getDate()+1)) days.push(new Date(d));
+    var cells = new Array(startPad).fill(null).concat(days);
+    var weeks = [];
+    for (var i=0;i<cells.length;i+=7) weeks.push(cells.slice(i,i+7));
+
+    var cell = 12, gapPx = 3, leftPad = 4, topPad = 16;
+    var w = leftPad + weeks.length * (cell + gapPx);
+    var h = topPad + 7 * (cell + gapPx);
+
+    var svg = svgEl(w, h);
+    var lastMonth = -1;
+    weeks.forEach(function(week, wi){
+      var x = leftPad + wi * (cell + gapPx);
+      var firstReal = week.find(function(dt){ return dt; });
+      if (firstReal && firstReal.getMonth() !== lastMonth && firstReal.getDate() <= 7) {
+        lastMonth = firstReal.getMonth();
+        svg += '<text class="axis-label" x="'+x+'" y="10">'+MONTHS[lastMonth]+'</text>';
+      }
+      week.forEach(function(dt, di){
+        if (!dt) return;
+        var key = dt.toISOString().slice(0,10);
+        var val = totals[key] || 0;
+        var y = topPad + di * (cell + gapPx);
+        var label = dt.toLocaleDateString("es-ES", { day:"numeric", month:"short", year:"numeric" });
+        svg += '<rect data-tip="'+label+': '+val+' registro'+(val===1?"":"s")+'" style="fill:'+seqColor(val,max)+'" '+
+               'x="'+x+'" y="'+y+'" width="'+cell+'" height="'+cell+'" rx="2"></rect>';
+      });
+    });
+    svg += '</svg>';
+    container.innerHTML = svg;
+    attachBarTooltips(container);
+  }
+
+  function attachBarTooltips(container){
+    var svg = container.querySelector("svg");
+    if (!svg) return;
+    svg.addEventListener("mousemove", function(e){
+      var target = e.target;
+      if (target && target.tagName === "rect" && target.dataset.tip) {
+        showTooltip('<div class="t-row">'+target.dataset.tip+'</div>', e.clientX, e.clientY);
+      } else {
+        hideTooltip();
+      }
+    });
+    svg.addEventListener("mouseleave", hideTooltip);
+  }
+
+  function renderLegend(container, activeIds){
+    container.innerHTML = CATEGORIES.map(function(c){
+      return '<span class="legend-item"><span class="legend-dot" style="background:var('+c.var+')"></span>'+c.emoji+' '+c.label+'</span>';
+    }).join("");
+  }
+
+  // ---------- tiles ----------
+  function renderTiles(year){
+    var list = entriesForYear(year);
+    var total = sumQty(list);
+    var cats = byCategory(list);
+    var topCat = CATEGORIES.reduce(function(best, c){
+      return (!best || cats[c.id] > cats[best.id]) ? c : best;
+    }, null);
+    var weekly = (total / weeksElapsedInYear(year)).toFixed(1);
+    var streak = currentStreak();
+
+    var tiles = [
+      { label: "Total en " + year, value: total },
+      { label: "Categoría más frecuente", value: (total ? (topCat.emoji + " " + topCat.label) : "—"), small: total ? (cats[topCat.id] + " veces") : "" },
+      { label: "Promedio semanal", value: weekly, small: "veces / semana" },
+      { label: "Racha actual", value: streak, small: streak === 1 ? "día seguido" : "días seguidos" }
+    ];
+
+    document.getElementById("tiles").innerHTML = tiles.map(function(t){
+      return '<div class="tile"><div class="label">'+t.label+'</div><div class="value">'+t.value+(t.small ? ' <small>'+t.small+'</small>' : '')+'</div></div>';
+    }).join("");
+  }
+
+  // ---------- history ----------
+  function renderHistory(){
+    var year = yearSelect.value;
+    var list = entriesForYear(year)
+      .filter(function(en){ return historyFilter === "all" || en.category === historyFilter; })
+      .sort(function(a,b){ return b.date.localeCompare(a.date); });
+
+    var body = document.getElementById("historyBody");
+    var empty = document.getElementById("historyEmpty");
+
+    if (!list.length) {
+      body.innerHTML = "";
+      empty.style.display = "block";
+      return;
+    }
+    empty.style.display = "none";
+
+    body.innerHTML = list.map(function(en){
+      var c = CAT_BY_ID[en.category];
+      var label = c.emoji + " " + (en.category === "otro" && en.customLabel ? en.customLabel : c.label);
+      return '<tr>'+
+        '<td>'+formatDate(en.date)+'</td>'+
+        '<td><span class="cat-chip"><span class="legend-dot" style="background:var('+c.var+')"></span>'+label+'</span></td>'+
+        '<td>'+en.qty+'</td>'+
+        '<td>'+(en.note ? escapeHtml(en.note) : "")+'</td>'+
+        '<td><button class="del-btn" data-id="'+en.id+'" title="Eliminar" aria-label="Eliminar">✕</button></td>'+
+      '</tr>';
+    }).join("");
+
+    Array.prototype.forEach.call(body.querySelectorAll(".del-btn"), function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.dataset.id;
+        entries = entries.filter(function(en){ return en.id !== id; });
+        saveEntries(entries);
+        populateYearSelect();
+        render();
+      });
+    });
+  }
+
+  function formatDate(iso){
+    var d = new Date(iso + "T00:00:00");
+    return d.toLocaleDateString("es-ES", { day:"2-digit", month:"short", year:"numeric" });
+  }
+  function escapeHtml(s){
+    var div = document.createElement("div");
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  // ---------- data management ----------
+  document.getElementById("exportBtn").addEventListener("click", function(){
+    var blob = new Blob([JSON.stringify({ version:1, exportedAt: new Date().toISOString(), entries: entries }, null, 2)], { type:"application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "registro-intimo-backup-" + new Date().toISOString().slice(0,10) + ".json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  var importFile = document.getElementById("importFile");
+  document.getElementById("importBtn").addEventListener("click", function(){ importFile.click(); });
+  importFile.addEventListener("change", function(){
+    var file = importFile.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      try {
+        var data = JSON.parse(reader.result);
+        var imported = Array.isArray(data) ? data : data.entries;
+        if (!Array.isArray(imported)) throw new Error("Formato inválido");
+        var existingIds = {};
+        entries.forEach(function(en){ existingIds[en.id] = true; });
+        imported.forEach(function(en){
+          if (!en.date || !en.category) return;
+          if (!en.id || existingIds[en.id]) en.id = uid();
+          if (!en.qty) en.qty = 1;
+          entries.push(en);
+        });
+        saveEntries(entries);
+        populateYearSelect();
+        render();
+        alert("Importación completada: " + imported.length + " registros procesados.");
+      } catch(e){
+        alert("No se pudo importar el archivo. Asegúrate de que es una copia de seguridad válida.");
+      }
+      importFile.value = "";
+    };
+    reader.readAsText(file);
+  });
+
+  document.getElementById("clearBtn").addEventListener("click", function(){
+    if (!entries.length) return;
+    if (confirm("¿Seguro que quieres borrar todos tus registros? Esta acción no se puede deshacer. Considera exportar una copia de seguridad antes.")) {
+      entries = [];
+      saveEntries(entries);
+      populateYearSelect();
+      render();
+    }
+  });
+
+  // ---------- hero stat ----------
+  function renderHeroStat(){
+    var year = new Date().getFullYear();
+    var total = sumQty(entriesForYear(year));
+    var el = document.getElementById("heroStat");
+    el.innerHTML = total
+      ? 'Este año (' + year + ') llevas <strong>' + total + '</strong> registros.'
+      : 'Aún no tienes registros. Añade el primero abajo.';
+  }
+
+  // ---------- render ----------
+  function render(){
+    var year = yearSelect.value;
+    var list = entriesForYear(year);
+
+    renderTiles(year);
+    renderLegend(document.getElementById("catLegend"));
+    renderCategoryChart(document.getElementById("catChart"), byCategory(list), year);
+    renderLegend(document.getElementById("monthLegend"));
+    renderMonthChart(document.getElementById("monthChart"), byMonth(list));
+    renderHeatmap(document.getElementById("heatmapChart"), year);
+    renderHistory();
+    renderHeroStat();
+  }
+
+  renderHistoryFilters();
+  render();
+})();
+</script>
+</body>
+</html>
