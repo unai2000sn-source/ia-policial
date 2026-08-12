@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#c81e45">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Registro Íntimo">
 <title>Registro Íntimo</title>
 <style>
   :root {
@@ -117,6 +121,23 @@
     border-radius: 999px; width: 36px; height: 36px; cursor: pointer; font-size: 16px;
     display:flex; align-items:center; justify-content:center;
   }
+  .header-actions { display: flex; align-items: center; gap: 10px; }
+  .install-btn {
+    display: none; align-items: center; gap: 6px;
+    border: none; background: var(--accent); color: #fff;
+    border-radius: 999px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+
+  .ios-hint {
+    display: none; align-items: center; justify-content: space-between; gap: 12px;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 14px; font-size: 13px; color: var(--text-secondary);
+    max-width: 560px; margin: 16px auto 0;
+  }
+  .ios-hint button {
+    background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer;
+    padding: 2px 6px; flex-shrink: 0;
+  }
 
   .hero { padding: 56px 20px 40px; text-align: center; }
   .hero h1 { font-size: clamp(28px, 4vw, 40px); margin: 0 0 12px; letter-spacing: -0.02em; }
@@ -165,6 +186,20 @@
     font-weight: 700;
   }
   .cat-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--dot); flex-shrink:0; }
+
+  .seg-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .seg-btn {
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--text-primary);
+    border-radius: 999px; padding: 8px 14px; font-size: 13.5px; cursor: pointer;
+  }
+  .seg-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+
+  .stars { display: flex; gap: 2px; }
+  .star-btn {
+    background: none; border: none; font-size: 24px; line-height: 1; cursor: pointer;
+    color: var(--baseline); padding: 2px;
+  }
+  .star-btn.active { color: var(--accent); }
 
   .submit-row { display:flex; justify-content:flex-end; margin-top: 14px; }
   button.primary {
@@ -251,9 +286,19 @@
 <header class="top">
   <div class="bar">
     <div class="brand">🔒 Registro Íntimo</div>
-    <button class="theme-toggle" id="themeToggle" title="Cambiar tema" aria-label="Cambiar tema">🌓</button>
+    <div class="header-actions">
+      <button class="install-btn" id="installBtn">📲 Instalar app</button>
+      <button class="theme-toggle" id="themeToggle" title="Cambiar tema" aria-label="Cambiar tema">🌓</button>
+    </div>
   </div>
 </header>
+
+<div class="wrap">
+  <div class="ios-hint" id="iosHint">
+    <span>📲 En iPhone: toca <strong>Compartir</strong> → <strong>Añadir a pantalla de inicio</strong> para instalar la app.</span>
+    <button id="iosHintClose" aria-label="Cerrar aviso">✕</button>
+  </div>
+</div>
 
 <div class="hero">
   <div class="wrap">
@@ -289,6 +334,29 @@
             <label for="f-custom">Especifica "Otro"</label>
             <input type="text" id="f-custom" maxlength="40" placeholder="p. ej. Juegos previos">
           </div>
+          <div id="partnerProtectionWrap" style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 12px;">
+            <div>
+              <label for="f-partner">Pareja (opcional)</label>
+              <input type="text" id="f-partner" maxlength="30" placeholder="Iniciales o apodo">
+            </div>
+            <div>
+              <label>Protección</label>
+              <div class="seg-row" id="protectionPicker">
+                <button type="button" class="seg-btn" data-val="si" aria-pressed="false">✅ Sí</button>
+                <button type="button" class="seg-btn" data-val="no" aria-pressed="false">⚠️ No</button>
+              </div>
+            </div>
+          </div>
+          <div style="grid-column: 1 / -1;">
+            <label>Valoración (opcional)</label>
+            <div class="stars" id="ratingPicker">
+              <button type="button" class="star-btn" data-val="1" aria-label="1 estrella">★</button>
+              <button type="button" class="star-btn" data-val="2" aria-label="2 estrellas">★</button>
+              <button type="button" class="star-btn" data-val="3" aria-label="3 estrellas">★</button>
+              <button type="button" class="star-btn" data-val="4" aria-label="4 estrellas">★</button>
+              <button type="button" class="star-btn" data-val="5" aria-label="5 estrellas">★</button>
+            </div>
+          </div>
           <div style="grid-column: 1 / -1;">
             <label for="f-note">Nota (opcional)</label>
             <input type="text" id="f-note" maxlength="120" placeholder="Opcional">
@@ -309,7 +377,8 @@
       </div>
     </div>
 
-    <div class="tiles" id="tiles" style="margin-bottom: 18px;"></div>
+    <div class="tiles" id="tiles" style="margin-bottom: 12px;"></div>
+    <div class="tiles" id="insightTiles" style="margin-bottom: 18px;"></div>
 
     <div class="card">
       <h2>Por categoría</h2>
@@ -329,6 +398,12 @@
       <h2>Mapa del año</h2>
       <p class="sub">Actividad diaria — más oscuro/intenso significa más registros ese día.</p>
       <div id="heatmapChart"></div>
+    </div>
+
+    <div class="card">
+      <h2>Por día de la semana</h2>
+      <p class="sub">En qué días de la semana registras más actividad.</p>
+      <div id="weekdayChart"></div>
     </div>
   </section>
 
@@ -441,6 +516,12 @@
   // ---------- category picker ----------
   var catPicker = document.getElementById("catPicker");
   var selectedCat = CATEGORIES[0].id;
+
+  function updateConditionalFields(){
+    document.getElementById("customLabelWrap").style.display = selectedCat === "otro" ? "block" : "none";
+    document.getElementById("partnerProtectionWrap").style.display = selectedCat === "masturbacion_propia" ? "none" : "grid";
+  }
+
   CATEGORIES.forEach(function(c){
     var btn = document.createElement("button");
     btn.type = "button";
@@ -454,9 +535,38 @@
       Array.prototype.forEach.call(catPicker.children, function(b, i){
         b.setAttribute("aria-pressed", CATEGORIES[i].id === selectedCat ? "true" : "false");
       });
-      document.getElementById("customLabelWrap").style.display = selectedCat === "otro" ? "block" : "none";
+      updateConditionalFields();
     });
     catPicker.appendChild(btn);
+  });
+  updateConditionalFields();
+
+  // ---------- protection & rating pickers ----------
+  var selectedProtection = "";
+  var protectionPicker = document.getElementById("protectionPicker");
+  Array.prototype.forEach.call(protectionPicker.children, function(btn){
+    btn.addEventListener("click", function(){
+      var val = btn.dataset.val;
+      selectedProtection = (selectedProtection === val) ? "" : val;
+      Array.prototype.forEach.call(protectionPicker.children, function(b){
+        b.setAttribute("aria-pressed", b.dataset.val === selectedProtection ? "true" : "false");
+      });
+    });
+  });
+
+  var selectedRating = 0;
+  var ratingPicker = document.getElementById("ratingPicker");
+  function paintStars(){
+    Array.prototype.forEach.call(ratingPicker.children, function(b){
+      b.classList.toggle("active", parseInt(b.dataset.val,10) <= selectedRating);
+    });
+  }
+  Array.prototype.forEach.call(ratingPicker.children, function(btn){
+    btn.addEventListener("click", function(){
+      var val = parseInt(btn.dataset.val, 10);
+      selectedRating = (selectedRating === val) ? 0 : val;
+      paintStars();
+    });
   });
 
   // ---------- form ----------
@@ -470,6 +580,8 @@
     var qty = Math.max(1, parseInt(document.getElementById("f-qty").value, 10) || 1);
     var note = document.getElementById("f-note").value.trim().slice(0,120);
     var customLabel = document.getElementById("f-custom").value.trim().slice(0,40);
+    var partner = document.getElementById("f-partner").value.trim().slice(0,30);
+    var appliesToPartner = selectedCat !== "masturbacion_propia";
 
     entries.push({
       id: uid(),
@@ -477,13 +589,21 @@
       category: selectedCat,
       customLabel: selectedCat === "otro" ? customLabel : "",
       qty: qty,
-      note: note
+      note: note,
+      partner: appliesToPartner ? partner : "",
+      protection: appliesToPartner ? selectedProtection : "",
+      rating: selectedRating || null
     });
     saveEntries(entries);
 
     document.getElementById("f-note").value = "";
     document.getElementById("f-custom").value = "";
+    document.getElementById("f-partner").value = "";
     document.getElementById("f-qty").value = "1";
+    selectedProtection = "";
+    Array.prototype.forEach.call(protectionPicker.children, function(b){ b.setAttribute("aria-pressed", "false"); });
+    selectedRating = 0;
+    paintStars();
 
     var entryYear = parseInt(date.slice(0,4), 10);
     populateYearSelect();
@@ -577,6 +697,54 @@
       d.setDate(d.getDate() - 1);
     }
     return streak;
+  }
+
+  function longestStreakEver(){
+    var daySet = {};
+    entries.forEach(function(en){ daySet[en.date] = true; });
+    var days = Object.keys(daySet).sort();
+    var longest = 0, run = 0, prev = null;
+    days.forEach(function(dStr){
+      var d = new Date(dStr + "T00:00:00");
+      run = (prev && Math.round((d - prev) / 86400000) === 1) ? run + 1 : 1;
+      longest = Math.max(longest, run);
+      prev = d;
+    });
+    return longest;
+  }
+
+  function yearOverYearDelta(year){
+    var current = sumQty(entriesForYear(year));
+    var prevYear = Number(year) - 1;
+    var previous = sumQty(entriesForYear(prevYear));
+    if (!previous) return null;
+    return { current: current, previous: previous, pct: Math.round(((current - previous) / previous) * 100), prevYear: prevYear };
+  }
+
+  var WEEKDAY_ORDER = [1,2,3,4,5,6,0];
+  var WEEKDAY_LABELS = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
+  function weekdayTotals(year){
+    var totals = [0,0,0,0,0,0,0];
+    entriesForYear(year).forEach(function(en){
+      totals[new Date(en.date + "T00:00:00").getDay()] += en.qty;
+    });
+    return WEEKDAY_ORDER.map(function(dow){ return totals[dow]; });
+  }
+
+  function protectionRate(year){
+    var list = entriesForYear(year).filter(function(en){
+      return en.category !== "masturbacion_propia" && (en.protection === "si" || en.protection === "no");
+    });
+    if (!list.length) return null;
+    var used = list.filter(function(en){ return en.protection === "si"; }).length;
+    return { pct: Math.round((used / list.length) * 100), used: used, total: list.length };
+  }
+
+  function avgRating(year){
+    var list = entriesForYear(year).filter(function(en){ return en.rating; });
+    if (!list.length) return null;
+    var sum = list.reduce(function(s, en){ return s + en.rating; }, 0);
+    return { avg: sum / list.length, count: list.length };
   }
 
   function weeksElapsedInYear(year){
@@ -743,6 +911,56 @@
     }).join("");
   }
 
+  function renderInsightTiles(year){
+    var longest = longestStreakEver();
+    var yoy = yearOverYearDelta(year);
+    var prot = protectionRate(year);
+    var rating = avgRating(year);
+
+    var tiles = [
+      { label: "Racha más larga", value: longest, small: longest === 1 ? "día" : "días" },
+      yoy
+        ? { label: "Frente a " + yoy.prevYear, value: (yoy.pct >= 0 ? "+" : "") + yoy.pct + "%", small: yoy.current + " vs " + yoy.previous }
+        : { label: "Frente a " + (Number(year) - 1), value: "—", small: "sin datos de ese año" },
+      prot
+        ? { label: "Uso de protección", value: prot.pct + "%", small: prot.used + " de " + prot.total }
+        : { label: "Uso de protección", value: "—", small: "sin datos" },
+      rating
+        ? { label: "Satisfacción media", value: rating.avg.toFixed(1) + " ★", small: "de " + rating.count + " valoradas" }
+        : { label: "Satisfacción media", value: "—", small: "sin valoraciones" }
+    ];
+
+    document.getElementById("insightTiles").innerHTML = tiles.map(function(t){
+      return '<div class="tile"><div class="label">'+t.label+'</div><div class="value">'+t.value+(t.small ? ' <small>'+t.small+'</small>' : '')+'</div></div>';
+    }).join("");
+  }
+
+  function renderWeekdayChart(container, year){
+    var totals = weekdayTotals(year);
+    var max = Math.max(1, Math.max.apply(null, totals));
+    var w = 640, h = 200, leftPad = 20, rightPad = 10, topPad = 10, bottomPad = 24;
+    var plotW = w - leftPad - rightPad, plotH = h - topPad - bottomPad;
+    var slotW = plotW / 7;
+    var barW = Math.min(46, slotW * 0.55);
+
+    var svg = svgEl(w, h);
+    [0, 0.5, 1].forEach(function(f){
+      var y = topPad + plotH * (1 - f);
+      svg += '<line class="gridline" x1="'+leftPad+'" x2="'+(w-rightPad)+'" y1="'+y+'" y2="'+y+'"></line>';
+    });
+    totals.forEach(function(val, i){
+      var x = leftPad + slotW * i + (slotW - barW) / 2;
+      var barH = (val / max) * plotH;
+      var y = topPad + plotH - barH;
+      svg += '<rect data-tip="'+WEEKDAY_LABELS[i]+': '+val+'" style="fill:var(--accent)" '+
+             'x="'+x+'" y="'+y+'" width="'+barW+'" height="'+Math.max(barH,0)+'" rx="4"></rect>';
+      svg += '<text class="axis-label" x="'+(x + barW/2)+'" y="'+(h-6)+'" text-anchor="middle">'+WEEKDAY_LABELS[i]+'</text>';
+    });
+    svg += '</svg>';
+    container.innerHTML = svg;
+    attachBarTooltips(container);
+  }
+
   // ---------- history ----------
   function renderHistory(){
     var year = yearSelect.value;
@@ -763,9 +981,15 @@
     body.innerHTML = list.map(function(en){
       var c = CAT_BY_ID[en.category];
       var label = c.emoji + " " + (en.category === "otro" && en.customLabel ? en.customLabel : c.label);
+      var extras = [];
+      if (en.partner) extras.push(escapeHtml(en.partner));
+      if (en.protection === "si") extras.push("✅ protección");
+      else if (en.protection === "no") extras.push("⚠️ sin protección");
+      if (en.rating) extras.push("★".repeat(en.rating));
+      var extraHtml = extras.length ? ' <span style="color:var(--text-muted); font-size:11.5px;">('+extras.join(" · ")+')</span>' : '';
       return '<tr>'+
         '<td>'+formatDate(en.date)+'</td>'+
-        '<td><span class="cat-chip"><span class="legend-dot" style="background:var('+c.var+')"></span>'+label+'</span></td>'+
+        '<td><span class="cat-chip"><span class="legend-dot" style="background:var('+c.var+')"></span>'+label+extraHtml+'</span></td>'+
         '<td>'+en.qty+'</td>'+
         '<td>'+(en.note ? escapeHtml(en.note) : "")+'</td>'+
         '<td><button class="del-btn" data-id="'+en.id+'" title="Eliminar" aria-label="Eliminar">✕</button></td>'+
@@ -863,17 +1087,124 @@
     var list = entriesForYear(year);
 
     renderTiles(year);
+    renderInsightTiles(year);
     renderLegend(document.getElementById("catLegend"));
     renderCategoryChart(document.getElementById("catChart"), byCategory(list), year);
     renderLegend(document.getElementById("monthLegend"));
     renderMonthChart(document.getElementById("monthChart"), byMonth(list));
     renderHeatmap(document.getElementById("heatmapChart"), year);
+    renderWeekdayChart(document.getElementById("weekdayChart"), year);
     renderHistory();
     renderHeroStat();
   }
 
+  // ---------- PWA install ----------
+  function makeIcon(size){
+    var canvas = document.createElement("canvas");
+    canvas.width = size; canvas.height = size;
+    var ctx = canvas.getContext("2d");
+    var grad = ctx.createLinearGradient(0, 0, size, size);
+    grad.addColorStop(0, "#c81e45");
+    grad.addColorStop(1, "#6d2e73");
+    var r = size * 0.22;
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(r, 0);
+    ctx.arcTo(size, 0, size, size, r);
+    ctx.arcTo(size, size, 0, size, r);
+    ctx.arcTo(0, size, 0, 0, r);
+    ctx.arcTo(0, 0, size, 0, r);
+    ctx.closePath();
+    ctx.fill();
+    ctx.font = (size * 0.52) + "px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("🔒", size / 2, size / 2 + size * 0.03);
+    return canvas.toDataURL("image/png");
+  }
+
+  function setupPWA(){
+    try {
+      var icon192 = makeIcon(192);
+      var icon512 = makeIcon(512);
+      var baseUrl = location.href.split("#")[0];
+      var manifest = {
+        name: "Registro Íntimo",
+        short_name: "Registro",
+        description: "Registro personal de actividad sexual con estadísticas anuales.",
+        start_url: baseUrl,
+        scope: baseUrl,
+        display: "standalone",
+        background_color: "#170a0d",
+        theme_color: "#c81e45",
+        icons: [
+          { src: icon192, sizes: "192x192", type: "image/png", purpose: "any" },
+          { src: icon192, sizes: "192x192", type: "image/png", purpose: "maskable" },
+          { src: icon512, sizes: "512x512", type: "image/png", purpose: "any" },
+          { src: icon512, sizes: "512x512", type: "image/png", purpose: "maskable" }
+        ]
+      };
+      var manifestBlob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });
+      var manifestLink = document.createElement("link");
+      manifestLink.rel = "manifest";
+      manifestLink.href = URL.createObjectURL(manifestBlob);
+      document.head.appendChild(manifestLink);
+
+      var appleIcon = document.createElement("link");
+      appleIcon.rel = "apple-touch-icon";
+      appleIcon.href = makeIcon(180);
+      document.head.appendChild(appleIcon);
+    } catch(e){ /* canvas/manifest not available in this context — page still works */ }
+
+    if ("serviceWorker" in navigator) {
+      try {
+        var swSource = "var CACHE='registro-intimo-v1';" +
+          "self.addEventListener('fetch', function(e){" +
+          "  e.respondWith(fetch(e.request).then(function(res){" +
+          "    var copy = res.clone();" +
+          "    caches.open(CACHE).then(function(c){ c.put(e.request, copy); });" +
+          "    return res;" +
+          "  }).catch(function(){ return caches.match(e.request); }));" +
+          "});";
+        var swBlob = new Blob([swSource], { type: "text/javascript" });
+        navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(function(){});
+      } catch(e){ /* service workers unavailable (e.g. file://, sandboxed context) — skip offline caching */ }
+    }
+
+    var installBtn = document.getElementById("installBtn");
+    var deferredPrompt = null;
+    window.addEventListener("beforeinstallprompt", function(e){
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = "inline-flex";
+    });
+    installBtn.addEventListener("click", function(){
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.finally(function(){
+        deferredPrompt = null;
+        installBtn.style.display = "none";
+      });
+    });
+    window.addEventListener("appinstalled", function(){
+      installBtn.style.display = "none";
+    });
+
+    var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    var isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+    var iosHint = document.getElementById("iosHint");
+    if (isIOS && !isStandalone && !localStorage.getItem("intimateTracker.iosHintDismissed")) {
+      iosHint.style.display = "flex";
+    }
+    document.getElementById("iosHintClose").addEventListener("click", function(){
+      iosHint.style.display = "none";
+      localStorage.setItem("intimateTracker.iosHintDismissed", "1");
+    });
+  }
+
   renderHistoryFilters();
   render();
+  setupPWA();
 })();
 </script>
 </body>
