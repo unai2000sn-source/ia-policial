@@ -276,6 +276,29 @@
 
   .data-actions { display:flex; flex-wrap: wrap; gap: 10px; }
 
+  .price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px,1fr)); gap: 12px; margin-bottom: 18px; }
+  .price-item { min-width: 0; }
+  .price-input-wrap { display: flex; align-items: center; gap: 8px; }
+  .price-input-wrap input { width: 100%; min-width: 0; }
+  .price-input-wrap span { color: var(--text-secondary); font-size: 13px; font-weight: 600; flex-shrink: 0; }
+
+  .budget-total {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 18px; margin-bottom: 18px;
+  }
+  .budget-total .label { font-size: 13px; color: var(--text-secondary); }
+  .budget-total .value { font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  table.budget { width: 100%; border-collapse: collapse; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+  table.budget th {
+    text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: .03em;
+    color: var(--text-muted); padding: 8px 6px; border-bottom: 1px solid var(--border);
+  }
+  table.budget td { padding: 8px 6px; border-bottom: 1px solid var(--gridline); }
+  table.budget th.num, table.budget td.num { text-align: right; }
+  table.budget tfoot td { border-top: 2px solid var(--border); border-bottom: none; font-weight: 700; padding-top: 12px; }
+
   footer { padding: 30px 20px 50px; text-align:center; color: var(--text-muted); font-size: 12.5px; line-height: 1.6; }
 
   @media (max-width: 560px) {
@@ -411,6 +434,32 @@
 
   <section>
     <div class="card">
+      <h2>💶 Presupuesto de regalos</h2>
+      <p class="sub">Asigna un valor a cada categoría y calcula cuánto "presupuesto" acumulas en el año — una forma divertida de planificar el regalo según la actividad registrada. Los precios se guardan solo en este navegador.</p>
+
+      <div id="priceInputs" class="price-grid"></div>
+
+      <div class="budget-total">
+        <div class="label">Presupuesto estimado en <span id="budgetYear"></span></div>
+        <div class="value" id="budgetTotal">0,00 €</div>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table class="budget">
+          <thead>
+            <tr><th>Categoría</th><th class="num">Veces</th><th class="num">Precio</th><th class="num">Subtotal</th></tr>
+          </thead>
+          <tbody id="budgetTableBody"></tbody>
+          <tfoot>
+            <tr><td colspan="3">Total</td><td class="num" id="budgetGrandTotal">0,00 €</td></tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="card">
       <h2>Historial</h2>
       <p class="sub">Todos tus registros del año seleccionado.</p>
       <div class="filter-row" id="historyFilters"></div>
@@ -489,6 +538,62 @@
   })();
 
   function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+  // ---------- gift budget ----------
+  var PRICES_KEY = "intimateTracker.prices.v1";
+  var DEFAULT_PRICES = { relaciones: 5, oral: 2, masturbacion_propia: 0, masturbacion_pareja: 1, otro: 2 };
+  function loadPrices(){
+    var parsed = {};
+    try {
+      var raw = localStorage.getItem(PRICES_KEY);
+      if (raw) parsed = JSON.parse(raw);
+    } catch(e){ parsed = {}; }
+    var out = {};
+    CATEGORIES.forEach(function(c){
+      out[c.id] = (typeof parsed[c.id] === "number" && !isNaN(parsed[c.id])) ? parsed[c.id] : DEFAULT_PRICES[c.id];
+    });
+    return out;
+  }
+  function savePrices(){ localStorage.setItem(PRICES_KEY, JSON.stringify(prices)); }
+  var prices = loadPrices();
+
+  function formatEuro(n){
+    return n.toLocaleString("es-ES", { style: "currency", currency: "EUR" });
+  }
+
+  function buildPriceInputs(){
+    var wrap = document.getElementById("priceInputs");
+    wrap.innerHTML = CATEGORIES.map(function(c){
+      return '<div class="price-item"><label>'+c.emoji+' '+c.label+'</label>'+
+        '<div class="price-input-wrap"><input type="number" min="0" step="0.5" data-cat="'+c.id+'" value="'+prices[c.id]+'"><span>€</span></div></div>';
+    }).join("");
+    Array.prototype.forEach.call(wrap.querySelectorAll("input"), function(input){
+      input.addEventListener("input", function(){
+        var val = parseFloat(input.value);
+        prices[input.dataset.cat] = (isNaN(val) || val < 0) ? 0 : val;
+        savePrices();
+        renderBudget(yearSelect.value);
+      });
+    });
+  }
+
+  function renderBudget(year){
+    var counts = byCategory(entriesForYear(year));
+    document.getElementById("budgetYear").textContent = year;
+
+    var grandTotal = 0;
+    var rowsHtml = CATEGORIES.map(function(c){
+      var count = counts[c.id];
+      var price = prices[c.id] || 0;
+      var subtotal = count * price;
+      grandTotal += subtotal;
+      return '<tr><td>'+c.emoji+' '+c.label+'</td><td class="num">'+count+'</td><td class="num">'+formatEuro(price)+'</td><td class="num">'+formatEuro(subtotal)+'</td></tr>';
+    }).join("");
+
+    document.getElementById("budgetTableBody").innerHTML = rowsHtml;
+    document.getElementById("budgetTotal").textContent = formatEuro(grandTotal);
+    document.getElementById("budgetGrandTotal").textContent = formatEuro(grandTotal);
+  }
 
   // ---------- theme ----------
   var themeToggle = document.getElementById("themeToggle");
@@ -1096,6 +1201,7 @@
     renderMonthChart(document.getElementById("monthChart"), byMonth(list));
     renderHeatmap(document.getElementById("heatmapChart"), year);
     renderWeekdayChart(document.getElementById("weekdayChart"), year);
+    renderBudget(year);
     renderHistory();
     renderHeroStat();
   }
@@ -1205,6 +1311,7 @@
   }
 
   renderHistoryFilters();
+  buildPriceInputs();
   render();
   setupPWA();
 })();
