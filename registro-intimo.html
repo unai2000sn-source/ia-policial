@@ -167,6 +167,8 @@
   .card .sub { color: var(--text-secondary); font-size: 13px; margin: 0 0 16px; }
 
   .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 12px; }
+  .form-grid > div, #partnerProtectionWrap > div { min-width: 0; }
+  input[type="date"], input[type="number"] { min-width: 0; }
   label { display:block; font-size: 12.5px; color: var(--text-secondary); margin-bottom: 6px; font-weight: 600; }
   input, select, textarea {
     width: 100%; background: var(--surface-2); color: var(--text-primary);
