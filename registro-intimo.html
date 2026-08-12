@@ -8,83 +8,86 @@
 <style>
   :root {
     color-scheme: light;
-    --surface-1:      #fcfcfb;
+    --surface-1:      #fffaf8;
     --surface-2:      #ffffff;
-    --page:           #f9f9f7;
-    --text-primary:   #0b0b0b;
-    --text-secondary: #52514e;
-    --text-muted:     #898781;
-    --gridline:       #e1e0d9;
-    --baseline:       #c3c2b7;
-    --border:         rgba(11,11,11,0.10);
-    --success:        #006300;
+    --page:           #faf1ee;
+    --text-primary:   #2b1015;
+    --text-secondary: #7a5560;
+    --text-muted:     #a98a92;
+    --gridline:       #ecdcd9;
+    --baseline:       #d9bfc0;
+    --border:         rgba(43,16,21,0.10);
+    --success:        #1f7a3d;
 
-    --series-1: #2a78d6; /* relaciones */
-    --series-2: #eb6834; /* oral */
-    --series-3: #1baf7a; /* masturbación */
-    --series-4: #eda100; /* otro */
+    --series-1: #c81e45; /* relaciones sexuales — carmesí */
+    --series-2: #6d2e73; /* sexo oral — ciruela */
+    --series-3: #b8860b; /* masturbación (a solas) — ámbar dorado */
+    --series-4: #d6336c; /* masturbación (en pareja) — fucsia */
+    --series-5: #7a1f3d; /* otro — burdeos */
 
-    --seq-1: #cde2fb;
-    --seq-2: #6da7ec;
-    --seq-3: #2a78d6;
-    --seq-4: #184f95;
+    --seq-1: #f6d9de;
+    --seq-2: #e9a3b3;
+    --seq-3: #d5607d;
+    --seq-4: #a8123a;
 
-    --accent: #2a78d6;
-    --danger: #d03b3b;
+    --accent: #c81e45;
+    --danger: #b3401f;
   }
   @media (prefers-color-scheme: dark) {
     :root:where(:not([data-theme="light"])) {
       color-scheme: dark;
-      --surface-1:      #1a1a19;
-      --surface-2:      #212120;
-      --page:           #0d0d0d;
-      --text-primary:   #ffffff;
-      --text-secondary: #c3c2b7;
-      --text-muted:     #898781;
-      --gridline:       #2c2c2a;
-      --baseline:       #383835;
+      --surface-1:      #221014;
+      --surface-2:      #2b1519;
+      --page:           #170a0d;
+      --text-primary:   #fdf1ee;
+      --text-secondary: #d8b8bd;
+      --text-muted:     #a98a92;
+      --gridline:       #3a2126;
+      --baseline:       #4a2a30;
       --border:         rgba(255,255,255,0.10);
-      --success:        #0ca30c;
+      --success:        #4fbd76;
 
-      --series-1: #3987e5;
-      --series-2: #d95926;
-      --series-3: #199e70;
-      --series-4: #c98500;
+      --series-1: #ff5577;
+      --series-2: #b16dc4;
+      --series-3: #e3b23e;
+      --series-4: #ff7aa8;
+      --series-5: #a8496a;
 
-      --seq-1: #1c2f45;
-      --seq-2: #1c5cab;
-      --seq-3: #2a78d6;
-      --seq-4: #6da7ec;
+      --seq-1: #3a1620;
+      --seq-2: #6b1f36;
+      --seq-3: #b8264d;
+      --seq-4: #ff5577;
 
-      --accent: #3987e5;
-      --danger: #e66767;
+      --accent: #ff5577;
+      --danger: #ff7a4d;
     }
   }
   :root[data-theme="dark"] {
     color-scheme: dark;
-    --surface-1:      #1a1a19;
-    --surface-2:      #212120;
-    --page:           #0d0d0d;
-    --text-primary:   #ffffff;
-    --text-secondary: #c3c2b7;
-    --text-muted:     #898781;
-    --gridline:       #2c2c2a;
-    --baseline:       #383835;
+    --surface-1:      #221014;
+    --surface-2:      #2b1519;
+    --page:           #170a0d;
+    --text-primary:   #fdf1ee;
+    --text-secondary: #d8b8bd;
+    --text-muted:     #a98a92;
+    --gridline:       #3a2126;
+    --baseline:       #4a2a30;
     --border:         rgba(255,255,255,0.10);
-    --success:        #0ca30c;
+    --success:        #4fbd76;
 
-    --series-1: #3987e5;
-    --series-2: #d95926;
-    --series-3: #199e70;
-    --series-4: #c98500;
+    --series-1: #ff5577;
+    --series-2: #b16dc4;
+    --series-3: #e3b23e;
+    --series-4: #ff7aa8;
+    --series-5: #a8496a;
 
-    --seq-1: #1c2f45;
-    --seq-2: #1c5cab;
-    --seq-3: #2a78d6;
-    --seq-4: #6da7ec;
+    --seq-1: #3a1620;
+    --seq-2: #6b1f36;
+    --seq-3: #b8264d;
+    --seq-4: #ff5577;
 
-    --accent: #3987e5;
-    --danger: #e66767;
+    --accent: #ff5577;
+    --danger: #ff7a4d;
   }
 
   * { box-sizing: border-box; }
@@ -376,10 +379,11 @@
   var THEME_KEY = "intimateTracker.theme";
 
   var CATEGORIES = [
-    { id: "relaciones",    label: "Relaciones sexuales", emoji: "👫", var: "--series-1" },
-    { id: "oral",          label: "Sexo oral",           emoji: "👄", var: "--series-2" },
-    { id: "masturbacion",  label: "Masturbación",        emoji: "✋", var: "--series-3" },
-    { id: "otro",          label: "Otro",                emoji: "✨", var: "--series-4" }
+    { id: "relaciones",          label: "Relaciones sexuales",        emoji: "👫", var: "--series-1" },
+    { id: "oral",                label: "Sexo oral",                  emoji: "👄", var: "--series-2" },
+    { id: "masturbacion_propia", label: "Masturbación (a solas)",     emoji: "✋", var: "--series-3" },
+    { id: "masturbacion_pareja", label: "Masturbación (en pareja)",   emoji: "🤲", var: "--series-4" },
+    { id: "otro",                label: "Otro",                       emoji: "✨", var: "--series-5" }
   ];
   var CAT_BY_ID = {};
   CATEGORIES.forEach(function(c){ CAT_BY_ID[c.id] = c; });
@@ -397,6 +401,15 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
   }
   var entries = loadEntries();
+
+  // migrate legacy single "masturbación" category (pre-split) to "a solas"
+  (function migrateLegacyCategories(){
+    var migrated = false;
+    entries.forEach(function(en){
+      if (en.category === "masturbacion") { en.category = "masturbacion_propia"; migrated = true; }
+    });
+    if (migrated) saveEntries(entries);
+  })();
 
   function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
 
@@ -582,7 +595,7 @@
 
   function renderCategoryChart(container, totals, year){
     var max = Math.max(1, CATEGORIES.reduce(function(m,c){ return Math.max(m, totals[c.id]); }, 0));
-    var w = 640, rowH = 40, gap = 10, leftPad = 130, rightPad = 46, topPad = 6;
+    var w = 700, rowH = 40, gap = 10, leftPad = 210, rightPad = 46, topPad = 6;
     var h = topPad + CATEGORIES.length * (rowH + gap);
     var barMaxW = w - leftPad - rightPad;
 
